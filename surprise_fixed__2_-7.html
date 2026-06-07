@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Surprise For My Sana! ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+<style>
+.shake { animation: shake 0.45s; }
+.screen-shake { animation: screenShake 0.5s; }
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-12px); }
+    40% { transform: translateX(12px); }
+    60% { transform: translateX(-10px); }
+    80% { transform: translateX(10px); }
+    100% { transform: translateX(0); }
+}
+@keyframes screenShake {
+    0%,100% { transform: translateX(0) rotate(0deg); }
+    10% { transform: translateX(-15px) rotate(-1deg); }
+    20% { transform: translateX(15px) rotate(1deg); }
+    30% { transform: translateX(-15px) rotate(-1deg); }
+    40% { transform: translateX(15px) rotate(1deg); }
+    50% { transform: translateX(-10px); }
+    60% { transform: translateX(10px); }
+    70% { transform: translateX(-8px); }
+    80% { transform: translateX(8px); }
+    90% { transform: translateX(-4px); }
+}
+@keyframes float { 0%,100% {transform:translateY(0) rotate(0deg);} 50% {transform:translateY(-30px) rotate(20deg);} }
+@keyframes smoothIn { from{opacity:0;transform:scale(0.9);} to{opacity:1;transform:scale(1);} }
+@keyframes letterOpen { from{transform:scale(0) rotate(-10deg);opacity:0;} to{transform:scale(1) rotate(0deg);opacity:1;} }
+@keyframes fly { to{transform:translateY(-120vh);} }
+@keyframes starFall { from{transform:translateY(-50px);} to{transform:translateY(110vh);} }
+@keyframes blow { to{ transform:translate(var(--ex),var(--ey)) scale(0); opacity:0; } }
+
+.animate-pop { animation:smoothIn 0.5s ease; }
+.animate-letter { animation:letterOpen 0.6s cubic-bezier(0.175,0.885,0.32,1.275); }
+
+body { margin:0; padding:0; background:#fff0f5; font-family:'Poppins',sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; overflow:hidden; text-align:center; transition: background 0.5s; }
+.deco { position:absolute; animation:float 6s infinite ease-in-out; opacity:0.7; pointer-events:none; z-index:1; }
+.container { background:rgba(255,255,255,0.95); padding:25px; border-radius:40px; box-shadow:0 15px 40px rgba(255,105,180,0.3); border:4px dashed #ffb6c1; width:85%; max-width:400px; position:relative; z-index:100; max-height: 90vh; overflow-y: auto; }
+video, .photo { width:100%; max-width:220px; border-radius:25px; margin-bottom:15px; border:3px solid #ffeff5; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+.video-large { width:100%; aspect-ratio:16/9; border-radius:15px; margin-bottom:15px; }
+h2 { color:#ff1493; margin:10px 0; }
+.msg { color:#d63384; font-weight:600; white-space:pre-line; line-height:1.5; font-size:15px; }
+.btn { padding:12px 25px; border:none; border-radius:50px; background:#ff69b4; color:white; margin:10px 5px; cursor:pointer; font-weight:bold; transition:0.3s; box-shadow:0 4px 10px rgba(255,105,180,0.3); outline:none; }
+.btn:active { transform:scale(0.9); }
+.hidden { display:none !important; }
+.tilt { transform:rotate(-6deg); font-size:24px; color:#ff4d6d; font-weight:bold; display:inline-block; margin:10px 0; }
+.quiz-option { background:#fff; color:#ff1493; border:2px solid #ff69b4; margin:8px auto; padding:12px; border-radius:20px; cursor:pointer; transition:0.3s; font-weight:bold; width:100%; display:block; font-size:14px; outline:none; }
+.correct-opt { background:#28a745 !important; color:white !important; border-color:#28a745 !important; }
+.wrong-opt { background:#dc3545 !important; color:white !important; border-color:#dc3545 !important; }
+#quiz-status { font-size:14px; font-weight:bold; min-height:38px; margin-bottom:8px; color:#ff1493; padding:0 5px; }
+.letter-btn { font-size:100px; cursor:pointer; display:inline-block; transition:0.4s; filter:drop-shadow(0 5px 15px rgba(255,105,180,0.4)); margin:20px 0; }
+#game-ui { position:fixed; top:20px; width:100%; z-index:1000; color:#ff1493; font-weight:bold; pointer-events:none; }
+#game-count { font-size:18px; background:rgba(255,255,255,0.9); padding:5px 15px; border-radius:20px; }
+.balloon { position:absolute; bottom:-100px; width:60px; height:80px; border-radius:50%; cursor:pointer; animation:fly 4s linear; z-index:500; display:flex; align-items:center; justify-content:center; font-size:30px; }
+.star { position:absolute; font-size:40px; cursor:pointer; z-index:500; animation:starFall 3s linear forwards; }
+.firework { position:absolute; pointer-events:none; animation:blow 1s forwards; z-index:1000; font-size:26px; }
+.edit-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px; }
+.edit-btn { background:linear-gradient(45deg,#ff69b4,#ff1493); padding:14px; border-radius:20px; color:#fff; font-weight:bold; cursor:pointer; box-shadow:0 6px 15px rgba(255,105,180,0.4); }
+#videoPlayerPage { position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:99999; display:none; justify-content:center; align-items:center; flex-direction:column; }
+#fullVideo { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; background:#000; }
+
+/* Top bar */
+#reel-top { position:absolute; top:0; left:0; right:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:14px 16px; background:linear-gradient(to bottom, rgba(0,0,0,0.55), transparent); }
+.reel-back-btn { background:none; border:none; color:#fff; font-size:26px; cursor:pointer; padding:4px 10px; }
+.reel-title { color:#fff; font-weight:700; font-size:16px; letter-spacing:1px; text-shadow:0 1px 6px #000; }
+#reel-camera-btn { color:#fff; font-size:22px; }
+
+/* Right side insta actions */
+#reel-actions { position:absolute; right:12px; bottom:130px; z-index:10; display:flex; flex-direction:column; gap:20px; align-items:center; }
+.reel-action-item { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; }
+.reel-action-item svg, .reel-action-item span.icon { color:#fff; fill:none; stroke:#fff; width:28px; height:28px; font-size:26px; display:block; }
+.reel-action-item .reel-count { color:#fff; font-size:12px; font-weight:700; text-shadow:0 1px 4px #000; }
+.reel-action-item:active { transform:scale(0.85); }
+#like-icon { transition: transform 0.2s, color 0.2s; }
+#like-icon.liked { color:#ff3b5c !important; stroke:#ff3b5c !important; fill:#ff3b5c !important; transform:scale(1.25); }
+
+/* Center tap */
+#reel-tap-area { position:absolute; top:0; left:0; width:75%; height:100%; z-index:5; cursor:pointer; }
+.reel-center-icon { position:absolute; top:50%; left:40%; transform:translate(-50%,-50%); font-size:60px; color:rgba(255,255,255,0.85); text-shadow:0 0 30px #000; animation:iconPop 0.5s ease forwards; pointer-events:none; }
+@keyframes iconPop { 0%{transform:translate(-50%,-50%) scale(0.4);opacity:1;} 70%{transform:translate(-50%,-50%) scale(1.3);opacity:1;} 100%{transform:translate(-50%,-50%) scale(1.1);opacity:0;} }
+
+/* Heart burst on like */
+.heart-burst { position:absolute; pointer-events:none; font-size:55px; animation:heartPop 0.7s ease forwards; z-index:20; }
+@keyframes heartPop { 0%{transform:scale(0.2);opacity:1;} 60%{transform:scale(1.4);opacity:1;} 100%{transform:scale(1.1);opacity:0;} }
+
+/* Bottom: user info + progress */
+#reel-bottom { position:absolute; bottom:0; left:0; right:0; z-index:10; padding:0 14px 20px; background:linear-gradient(to top, rgba(0,0,0,0.72) 60%, transparent); }
+#reel-user-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+#reel-dp { width:38px; height:38px; border-radius:50%; border:2px solid #fff; object-fit:cover; flex-shrink:0; }
+#reel-username { color:#fff; font-weight:700; font-size:14px; text-shadow:0 1px 4px #000; }
+#reel-follow-btn { background:transparent; border:1.5px solid #fff; color:#fff; border-radius:8px; padding:4px 12px; font-size:13px; font-weight:700; cursor:pointer; margin-left:4px; }
+#reel-song-row { display:flex; align-items:center; gap:7px; margin-bottom:10px; color:rgba(255,255,255,0.85); font-size:12px; }
+#reel-song-row span { animation: marquee 8s linear infinite; white-space:nowrap; display:inline-block; }
+@keyframes marquee { 0%{transform:translateX(0);} 100%{transform:translateX(-60px);} }
+#reel-disc { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#444,#111); border:2px solid #888; animation:spin 4s linear infinite; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:14px; }
+@keyframes spin { 100%{transform:rotate(360deg);} }
+#reel-progress-wrap { width:100%; margin-bottom:4px; }
+#reel-progress-bg { position:relative; height:2.5px; background:rgba(255,255,255,0.3); border-radius:2px; }
+#reel-progress-fill { position:absolute; left:0; top:0; height:100%; background:#fff; border-radius:2px; width:0%; pointer-events:none; }
+#reel-seek { position:absolute; left:0; top:-9px; width:100%; height:22px; opacity:0; cursor:pointer; margin:0; }
+#reel-time-row { display:flex; justify-content:space-between; color:rgba(255,255,255,0.75); font-size:11px; font-weight:600; margin-top:3px; }
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" loop><source src="bg.mp3"></audio>
+<audio id="sadMusic" loop><source src="sad.mp3"></audio>
+<audio id="muahMusic"><source src="muah.mp3"></audio>
+<audio id="popSound"><source src="pop.mp3"></audio>
+<audio id="blastSound"><source src="blast.mp3"></audio>
+<audio id="correctSnd"><source src="r.MP3"></audio>
+<audio id="wrongSnd"><source src="w.mp3"></audio>
+<audio id="starSnd"><source src="star.mp3"></audio>
+<audio id="typeSnd"><source src="type.mp3"></audio>
+<audio id="twinkleSnd"><source src="twinkle.mp3"></audio>
+<audio id="letterSnd"><source src="letter.mp3"></audio>
+<audio id="victorySnd"><source src="victory.mp3"></audio>
+<audio id="aaaaSnd"><source src="aaaa.mp3"></audio>
+<audio id="yummySnd"><source src="yummy.mp3"></audio>
+
+<!-- Deco Emojis -->
+<div class="deco" style="top:5%; left:5%; font-size:35px;">🌸</div>
+<div class="deco" style="top:15%; right:15%; font-size:25px;">✨</div>
+<div class="deco" style="bottom:10%; left:10%; font-size:30px;">💖</div>
+<div class="deco" style="bottom:5%; right:20%; font-size:35px;">🌻</div>
+
+<div id="game-ui" class="hidden">
+  <div id="game-msg">Phodo 13 Balloons! 🎈</div>
+  <div id="game-count">Count: 0/13</div>
+</div>
+<div id="object-layer"></div>
+
+<div id="page1" class="container animate-pop">
+  <video autoplay loop muted playsinline><source src="intro.mp4"></video>
+  <h2>ONE SURPRISE FOR MY WIFE 👉👈</h2>
+  <p class="msg">𝙾𝚈𝙴 𝙼𝙴𝚁𝙸 𝙱𝙸𝙻𝙻𝙸 𝙽𝙾 𝙿𝙴 𝙲𝙻𝙸𝙲𝙺 𝙼𝙰𝚃 𝙺𝙰𝚁𝙽𝙰 😾</p>
+  <button id="yesBtn" onclick="handleYesClick()" class="btn">YES</button>
+  <button id="noBtn" onclick="showNoPage()" class="btn">NO</button>
+</div>
+
+<div id="noPage" class="container hidden animate-pop">
+  <video autoplay loop muted playsinline><source src="sad.mp4"></video>
+  <div class="tilt">𝓐𝓐𝓐𝓐𝓐𝓐𝓐𝓐𝓐𝓐𝓐𝓐😭<br>𝓐𝓐𝓐𝓐𝓐𝓐𝓐😭</div>
+  <p class="msg"><b>𝐓𝐔𝐌𝐍𝐄 𝐍𝐎 𝐏𝐄 𝐂𝐋𝐈𝐂𝐊 𝐊𝐘𝐔 𝐊𝐈𝐘𝐀😭<br>𝐌𝐄𝐑𝐄 𝐒𝐔𝐑𝐏𝐑𝐈𝐒𝐄 𝐊𝐀 𝐊𝐘𝐀 𝐇𝐎𝐆𝐀 𝐀𝐁😭</b></p>
+  <button onclick="back()" class="btn">TRY AGAIN</button>
+</div>
+
+<div id="page3" class="container hidden animate-pop">
+  <video autoplay loop muted playsinline><source src="kiss.mp4"></video>
+  <div class="msg" style="font-size:20px;">𝑀𝑢𝑎ℎ 𝑚𝑢𝑎ℎ💋<br>𝑀𝑢𝑎ℎℎℎℎℎℎℎℎ 😘<br>𝑀𝑢𝑎ℎℎℎℎℎℎℎℎℎℎℎℎℎℎ💋</div>
+  <button onclick="showPage(4)" class="btn">Next ❤️</button>
+</div>
+
+<div id="page4" class="container hidden animate-pop">
+  <img src="sana1.jpg" class="photo">
+  <div id="typing4" class="msg"></div>
+  <button id="btn4" onclick="showPage(5)" class="btn hidden">Next 😘</button>
+</div>
+
+<div id="page5" class="container hidden animate-pop">
+  <img src="sana3.jpg" class="photo">
+  <div id="typing5" class="msg"></div>
+  <button id="btn5" onclick="showPage(6)" class="btn hidden">Aage Dekho ✨</button>
+</div>
+
+<div id="page6" class="container hidden animate-pop">
+  <img src="sana2.jpg" class="photo">
+  <div id="typing6" class="msg"></div>
+  <button id="btn6" onclick="showPage(7)" class="btn hidden">Next My Love ❤️</button>
+</div>
+
+<div id="page7" class="container hidden animate-pop">
+  <img src="sana4.jpg" class="photo">
+  <div id="typing7" class="msg"></div>
+  <button id="gameBtn" onclick="startBalloonGame()" class="btn hidden">TAP FOR GAME 🎮</button>
+</div>
+
+<div id="cakePage" class="container hidden animate-pop">
+  <h2 style="color:#ff1493;">HAPPY 13th BIRTHDAY! 🎂</h2>
+  <div style="font-size:80px; cursor:pointer;" onclick="cutCake()">🎂</div>
+  <p class="msg">Bɪʟʟɪ, ᴄᴀᴋᴇ ᴄᴜᴛ ᴋᴀʀᴏ! 🍰</p>
+</div>
+
+<div id="yummyPage" class="container hidden animate-pop">
+  <h2 style="color:#ff1493;">YUMMY! ❤️</h2>
+  <img src="cake.jpg" class="photo">
+  <p class="msg">Aᴀᴀᴀᴀᴀᴀᴀᴀ 🎉<br>Lᴏ ᴍᴇʀɪ ʙɪʟʟɪ 😺<br>Mᴜʜ ᴋʜᴏʟᴏ Aᴀᴀᴀ ᴋᴀʀᴏ🧧</p>
+  <button onclick="goToStarIntro()" class="btn">Next Game ⭐</button>
+</div>
+
+<div id="starIntro" class="container hidden animate-pop">
+  <h2>NEXT GAME ⭐</h2>
+  <p class="msg">Catch the falling stars!</p>
+  <button onclick="startStarGame()" class="btn">CATCH THE STAR ✨</button>
+</div>
+
+<div id="giftPage" class="container hidden animate-pop">
+  <h2 style="font-family:serif;">ՏᑭᗴᑕIᗩᒪ ᘜIᖴT ᖴOᖇ YOᑌ! 🎁</h2>
+  <div onclick="showVideoGift()" style="font-size:90px; cursor:pointer;">🎁</div>
+  <p class="msg">Tᴀᴘ ᴛᴏ ᴏᴘᴇɴ ʏᴏᴜʀ sᴜʀᴘʀɪsᴇ! 🎁</p>
+</div>
+
+<div id="videoGiftPage" class="container hidden animate-pop">
+  <video class="video-large" controls autoplay loop><source src="gift_video.mp4"></video>
+  <p class="msg" style="font-size:18px;"><b>𝐘𝐄𝐋𝐎 𝐀𝐏𝐊𝐀 𝐆𝐈𝐅𝐓 𝐌𝐄𝐑𝐄 𝐁𝐀𝐋𝐎 𝐒𝐄 𝐁𝐀𝐍𝐀 𝐇𝐔𝐀 𝐃𝐈𝐋 ❤️<br><br>𝐈 𝐋𝐎𝐕𝐄 𝐘𝐎𝐔 𝐁𝐈𝐋𝐋𝐈 🐱🫶</b></p>
+  <button onclick="startQuiz()" class="btn">Aage Dekho ❤️</button>
+</div>
+
+<div id="quizPage" class="container hidden animate-pop">
+  <div id="quiz-status"></div>
+  <h3 id="queNum" style="color:#ff1493;">QUE 1</h3>
+  <p id="queText" class="msg"></p>
+  <div id="optionsContainer"></div>
+</div>
+
+<div id="winnerPage" class="container hidden animate-pop">
+  <h2 style="font-size:30px;">SURPRISE EDITS 🥳</h2>
+  <p class="msg" style="font-size:18px;">ONE MORE GIFT FOR YOU🫵<br>MERI WIFE SANA 💞🐱</p>
+  <div class="edit-grid">
+    <div class="edit-btn" onclick="playEdit('1.mp4')">Edit 1</div>
+    <div class="edit-btn" onclick="playEdit('2.mp4')">Edit 2</div>
+    <div class="edit-btn" onclick="playEdit('3.mp4')">Edit 3</div>
+    <div class="edit-btn" onclick="playEdit('4.mp4')">Edit 4</div>
+    <div class="edit-btn" onclick="playEdit('5.mp4')">Edit 5</div>
+  </div>
+  <button onclick="showLetterIntro()" class="btn" style="margin-top:20px;">Aage Badho 💌</button>
+</div>
+
+<div id="letterIntro" class="container hidden animate-pop">
+  <h2 style="color:#ff1493;">KHAS AAPKE LIYE ✨</h2>
+  <p class="msg" style="font-size:18px; color:#ff69b4;"><b>A LETTER FROM NAYAN</b></p>
+  <div onclick="openLetter()" class="letter-btn">💌</div>
+  <p class="msg" style="font-size:13px;">(Tap the letter to open it!)</p>
+</div>
+
+<div id="page13" class="container hidden animate-letter">
+  <h2 style="color:#ff1493;">𝗛𝗘𝗟𝗟𝗢 𝗠𝗘𝗥𝗜 𝗦𝗔𝗡𝗔 ❤️</h2>
+  <p class="msg">ME NAYAN HAPPY BIRTHDAY MERI SANA 🎂💝<br>Mᴇ Kᴏɪ Gɪғᴛ Tᴏ Nᴀʜɪ Dᴇ Sᴀᴋᴛᴀ 🫠🎁<br>Lᴇᴋɪɴ Mᴇ Cʜᴀʜᴛᴀ Hᴜ Tᴜᴍ Kʜᴜsʜ Rᴀʜᴏ🧧😘<br>Oʀ Tᴜᴍʜᴀʀɪ Hᴀʀ Iᴄʜᴀ Pᴜʀɪ Hᴏ 💫</p>
+  <button onclick="showFinal()" class="btn">Next ❤️</button>
+</div>
+
+<div id="finalPage" class="container hidden animate-pop">
+  <p class="msg" style="font-size:18px;"><b>𝗛𝗔𝗣𝗣𝗬 𝗛𝗔𝗣𝗣𝗬 𝗛𝗔𝗣𝗣𝗬𝗬𝗬𝗬𝗬𝗬𝗬𝗬<br>𝗕𝗜𝗥𝗧𝗛𝗗𝗔𝗬 𝗠𝗘𝗥𝗜 𝗦𝗔𝗡𝗔🎉😘<br><br>𝗔𝗣𝗡𝗘 𝗢𝗥 𝗕𝗔Ｄ𝐄 𝗞𝗔𝗥𝗢 😁<br>𝗢𝗛 𝗦𝗢𝗥𝐑𝐘 😜<br>𝗢𝗥 𝗕𝗔Ｄ𝐄 𝗛𝗢 𝗝𝗔𝗢😘</b></p>
+  <button onclick="location.reload()" class="btn">Restart 💖</button>
+</div>
+
+<!-- Instagram Reels Style Player -->
+<div id="videoPlayerPage">
+  <video id="fullVideo" playsinline></video>
+
+  <!-- Top bar -->
+  <div id="reel-top">
+    <button class="reel-back-btn" onclick="closeVideo()">&#8592;</button>
+    <span class="reel-title">Reels</span>
+    <span id="reel-camera-btn">📷</span>
+  </div>
+
+  <!-- Right side actions -->
+  <div id="reel-actions">
+    <!-- Like -->
+    <div class="reel-action-item" onclick="toggleLike(this)">
+      <svg id="like-icon" viewBox="0 0 24 24" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <span class="reel-count" id="like-count">4.2M</span>
+    </div>
+    <!-- Comment -->
+    <div class="reel-action-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span class="reel-count">19.8K</span>
+    </div>
+    <!-- Share -->
+    <div class="reel-action-item">
+      <svg viewBox="0 0 24 24" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <span class="reel-count">3.8M</span>
+    </div>
+    <!-- Save -->
+    <div class="reel-action-item" onclick="toggleSave(this)">
+      <svg id="save-icon" viewBox="0 0 24 24" stroke-width="2"><polygon points="19 21 12 16 5 21 5 3 19 3 19 21"/></svg>
+      <span class="reel-count">126K</span>
+    </div>
+    <!-- More -->
+    <div class="reel-action-item" style="margin-top:4px;">
+      <span style="color:#fff;font-size:22px;letter-spacing:1px;">•••</span>
+    </div>
+    <!-- Disc -->
+    <div id="reel-disc">🎵</div>
+  </div>
+
+  <!-- Center tap area -->
+  <div id="reel-tap-area" onclick="handleTapPlay(event)">
+    <div id="reel-play-icon" class="reel-center-icon hidden">▶</div>
+  </div>
+
+  <!-- Bottom -->
+  <div id="reel-bottom">
+    <div id="reel-user-row">
+      <img id="reel-dp" src="dp.jpg" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><circle cx=%2220%22 cy=%2220%22 r=%2220%22 fill=%22%23ff69b4%22/><text x=%2220%22 y=%2226%22 text-anchor=%22middle%22 font-size=%2218%22>N</text></svg>'">
+      <span id="reel-username">nayan 💕</span>
+      <button id="reel-follow-btn">Follow</button>
+    </div>
+    <div id="reel-song-row">
+      <div id="reel-disc-bottom">🎵</div>
+      <span id="reel-song-name">bg.mp3 • nayan_edits</span>
+    </div>
+    <div id="reel-progress-wrap">
+      <div id="reel-progress-bg">
+        <div id="reel-progress-fill"></div>
+        <input type="range" id="reel-seek" value="0" min="0" step="0.1" oninput="seekVideo(this.value)">
+      </div>
+    </div>
+    <div id="reel-time-row">
+      <span id="reel-current">0:00</span>
+      <span id="reel-mute-inline" onclick="toggleMute()" style="cursor:pointer;" id="muteIcon">🔊</span>
+      <span id="reel-duration">0:00</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Safe audio helpers ─────────────────────────────────────────
+function safePlay(el) {
+  if (!el) return;
+  try { el.currentTime = 0; el.play().catch(()=>{}); } catch(e) {}
+}
+function safePause(el) {
+  if (!el) return;
+  try { el.pause(); } catch(e) {}
+}
+
+const bg       = document.getElementById("bgMusic");
+const sad      = document.getElementById("sadMusic");
+const muah     = document.getElementById("muahMusic");
+const pop      = document.getElementById("popSound");
+const blastSnd = document.getElementById("blastSound");
+const correctSnd = document.getElementById("correctSnd");
+const wrongSnd = document.getElementById("wrongSnd");
+const starSnd  = document.getElementById("starSnd");
+const typeSnd  = document.getElementById("typeSnd");
+const twinkleSnd = document.getElementById("twinkleSnd");
+const letterSnd  = document.getElementById("letterSnd");
+const victorySnd = document.getElementById("victorySnd");
+const aaaaSnd    = document.getElementById("aaaaSnd");
+const yummySnd   = document.getElementById("yummySnd");
+try { typeSnd.volume = 0.4; } catch(e) {}
+
+try { bg.volume = 0.15; } catch(e) {}
+
+const yesBtn = document.getElementById("yesBtn");
+let clickCount = 0, popped = 0, stars = 0, currentQue = 0;
+let musicStarted = false;
+
+// ── Wrong answer roast messages ────────────────────────────────
+const wrongMsgs = [
+  "Galat answer hai beby 🤧!",
+  "Sasuma Ko Bolo🥜 Badam khilaye🤣!",
+  "Beby itna bhi nahi pata? 🥹",
+  "Sahi Jawab Do warna 🛌 Bed me Le jaunga 🌚!",
+  "Billi? Mere se Pyar nahi karti na? 😭",
+  "Sahi Jawab warna 🍊 POM POM daba dunga 😳!",
+  "Is bachi ko itna 🥲 bhi Nahi aata?",
+  "Kissy Do sahi 💋 jawab batata hu!",
+  "Jawab do warna Sath 😪 me Sona hoga 🪽!",
+  "Is billi ko bs 😤 kutna aata hai 🙊!",
+  "Me gussa ho jaunga 😑!",
+  "Tera IQ check karwana padega beby 😂!",
+  "Yaar seriously?? Itna easy tha 😩!",
+  "Bakri bhi soch ke deti hai answer 🐐😂!",
+  "Google karo please main wait karta hoon 😭!",
+  "Brain use karo beby, warna kya fayda 🧠💀!",
+  "Ek aur chance deta hoon, faltu mat karo 🙏!",
+];
+let lastWrongIdx = -1;
+function getWrongMsg() {
+  let idx;
+  do { idx = Math.floor(Math.random() * wrongMsgs.length); } while (idx === lastWrongIdx);
+  lastWrongIdx = idx;
+  return wrongMsgs[idx];
+}
+
+// ── Start bg music on FIRST tap ────────────────────────────────
+document.addEventListener('click', function startOnce() {
+  if (!musicStarted) {
+    musicStarted = true;
+    try { bg.volume = 0.15; bg.play().catch(()=>{}); } catch(e) {}
+  }
+  document.removeEventListener('click', startOnce);
+});
+
+// ── Pop sound on normal buttons only ──────────────────────────
+function playTapSound() { safePlay(pop); }
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('btn')) playTapSound();
+});
+
+// ── YES button ─────────────────────────────────────────────────
+function handleYesClick() {
+  clickCount++;
+  if (clickCount < 10) {
+    yesBtn.style.position = 'fixed';
+    yesBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+    yesBtn.style.top  = Math.random() * (window.innerHeight - 50) + 'px';
+  } else {
+    document.getElementById("page1").classList.add("hidden");
+    document.getElementById("page3").classList.remove("hidden");
+    safePlay(muah);
+  }
+}
+
+// ── NO button ──────────────────────────────────────────────────
+function showNoPage() {
+  const p1 = document.getElementById("page1");
+  p1.classList.add("shake");
+  setTimeout(() => {
+    p1.classList.add("hidden");
+    document.getElementById("noPage").classList.remove("hidden");
+    try { bg.volume = 0; } catch(e) {}
+    safePlay(sad);
+  }, 450);
+}
+
+function back() {
+  document.getElementById("noPage").classList.add("hidden");
+  const p1 = document.getElementById("page1");
+  p1.classList.remove("hidden");
+  p1.classList.remove("shake");
+  safePause(sad);
+  try { bg.volume = 0.15; } catch(e) {}
+  clickCount = 0;
+  yesBtn.style.position = 'relative';
+  yesBtn.style.left = 'auto';
+  yesBtn.style.top  = 'auto';
+}
+
+// ── Page navigation ────────────────────────────────────────────
+function showPage(num) {
+  document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+  document.getElementById('page' + num).classList.remove('hidden');
+  if (num === 4) typeWriter("typing4","𝙃𝘼𝙋𝙋𝙔 𝘽𝙄𝙍𝙏𝙃𝘿𝘼𝙔 🎂 🎈\n\nYᴇʜ ᴛᴜᴍ ʜᴏ Sᴀɴᴀ ❤️\nNɪᴄᴋɴᴀᴍᴇ: Bɪʟʟɪ 🐱\nMᴇʀɪ Pʏᴀʀɪ Sᴀɴᴀ Tᴜᴍ Sᴀʙsᴇ Pʏᴀʀɪ Hᴏ\nHᴀʀ Dɪɴ Sᴘᴇᴄɪᴀʟ Lᴀɢᴛᴀ Hᴀɪ Jᴀʙ Tᴜᴍ Sᴀᴀᴛʜ Hᴏ✨","btn4");
+  if (num === 5) typeWriter("typing5","Mᴇʀɪ Lɪғᴇ Kᴀ ✨\nSᴀʙsᴇ Bᴇᴀᴜᴛɪғᴜʟ Cʜᴀᴘᴛᴇʀ Tᴜᴍ Hᴏ 📖\nTᴜᴍ Wᴏ Cʜɪᴢ Hᴏ Jo ᴍᴜᴊʜᴇ Hᴀʀ Pᴀʟ ᴋʜᴜsʜ 😁\nKᴀʀ Dᴇᴛɪ Hᴀɪ 💕","btn5");
+  if (num === 6) typeWriter("typing6","Tᴜᴍ Mᴇʀɪ Wᴏʜ Fᴇᴇʟɪɴɢ Hᴏ\nJᴏ Wᴏʀᴅs Mᴇ Exᴘʟᴀɪɴ Nᴀʜɪ Hᴏ Sᴀᴋᴛɪ ❤️\nHᴀʀ Dɪɴ Tᴜᴍsᴇ Aᴜʀ Zʏᴀᴅᴀ Pʏᴀʀ Hᴏ Jᴀᴛᴀ Hᴀɪ💘\n\nI ᒪOᐯᗴ YOᑌ♥️🥹","btn6");
+  if (num === 7) typeWriter("typing7","Iᴛɴɪ Pʏᴀʀɪ Aɴᴋʜᴇ 😶‍🌫️🎀\nAɢᴀʀ Tᴜᴍʜᴀʀɪ Iᴢᴀᴛ Kᴀʀᴜɴɢᴀ Tᴏ😝\nLᴜᴛᴜɴɢᴀ Ksᴋɪ 😜\nHᴇʜᴇ 😆","gameBtn");
+}
+
+function typeWriter(id, text, btnId) {
+  let i = 0;
+  const el = document.getElementById(id);
+  el.innerHTML = "";
+
+  // Lower bg music and start type sound
+  try { bg.volume = 0.04; } catch(e) {}
+  try {
+    typeSnd.currentTime = 0;
+    typeSnd.loop = true;
+    typeSnd.volume = 0.5;
+    typeSnd.play().catch(()=>{});
+  } catch(e) {}
+
+  function type() {
+    if (i < text.length) {
+      el.innerHTML += text.charAt(i);
+      i++;
+      setTimeout(type, 35);
+    } else {
+      try {
+        typeSnd.pause();
+        typeSnd.currentTime = 0;
+        typeSnd.loop = false;
+      } catch(e) {}
+      try { bg.volume = 0.15; } catch(e) {}
+      document.getElementById(btnId).classList.remove("hidden");
+    }
+  }
+  type();
+}
+
+// ── Balloon game ───────────────────────────────────────────────
+function startBalloonGame() {
+  document.getElementById("page7").classList.add("hidden");
+  document.getElementById("game-ui").classList.remove("hidden");
+  spawnBalloon();
+}
+function spawnBalloon() {
+  if (popped >= 13) return;
+  const b = document.createElement('div');
+  b.className = 'balloon';
+  b.style.left = Math.random() * 80 + 10 + "%";
+  b.style.background = `hsl(${Math.random()*360},80%,70%)`;
+  b.innerHTML = "🎈";
+  b.onclick = (e) => {
+    e.stopPropagation();
+    safePlay(blastSnd);
+    popped++;
+    document.getElementById("game-count").innerText = `Count: ${popped}/13`;
+    b.remove();
+    if (popped < 13) spawnBalloon();
+    else { document.getElementById("game-ui").classList.add("hidden"); document.getElementById("cakePage").classList.remove("hidden"); }
+  };
+  document.getElementById("object-layer").appendChild(b);
+  setTimeout(() => { if (b.parentNode && popped < 13) { b.remove(); spawnBalloon(); } }, 4100);
+}
+
+function cutCake() {
+  document.getElementById("cakePage").classList.add("hidden");
+  document.getElementById("yummyPage").classList.remove("hidden");
+  // Pehle aaaa.mp3 bajao, phir uske khatam hone par yummy.mp3
+  try {
+    aaaaSnd.currentTime = 0;
+    aaaaSnd.play().catch(()=>{});
+    aaaaSnd.onended = function() {
+      safePlay(yummySnd);
+      aaaaSnd.onended = null;
+    };
+  } catch(e) {
+    safePlay(yummySnd);
+  }
+}
+
+function goToStarIntro() { document.getElementById("yummyPage").classList.add("hidden"); document.getElementById("starIntro").classList.remove("hidden"); }
+
+// ── Star game ──────────────────────────────────────────────────
+function startStarGame() {
+  document.getElementById("starIntro").classList.add("hidden");
+  document.getElementById("game-ui").classList.remove("hidden");
+  document.getElementById("game-msg").innerText = "Catch 5 Stars! ✨";
+  document.getElementById("game-count").innerText = "Stars: 0/5";
+  spawnStar();
+}
+function spawnStar() {
+  if (stars >= 5) return;
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.left = Math.random() * 90 + "%";
+  s.innerHTML = "⭐";
+  s.onclick = (e) => {
+    e.stopPropagation();
+    safePlay(twinkleSnd);
+    safePlay(starSnd);
+    stars++;
+    document.getElementById("game-count").innerText = `Stars: ${stars}/5`;
+    s.remove();
+    if (stars < 5) spawnStar();
+    else { document.getElementById("game-ui").classList.add("hidden"); document.getElementById("giftPage").classList.remove("hidden"); }
+  };
+  document.getElementById("object-layer").appendChild(s);
+  setTimeout(() => { if (s.parentNode && stars < 5) { s.remove(); spawnStar(); } }, 3100);
+}
+
+// ── Gift & Quiz ────────────────────────────────────────────────
+function showVideoGift() { document.getElementById("giftPage").classList.add("hidden"); document.getElementById("videoGiftPage").classList.remove("hidden"); }
+function startQuiz() { document.getElementById("videoGiftPage").classList.add("hidden"); document.getElementById("quizPage").classList.remove("hidden"); loadQuestion(); }
+
+const quizData = [
+  {q:"Mᴇʀᴀ Fᴀᴠᴏᴜʀɪᴛᴇ Cᴏʟᴏᴜʀ ?",      opts:["A > RED ♥️","B > BLUE 💙","C > BLACK 🖤","D > PURPLE 💜"], ans:2},
+  {q:"Mᴇʀᴀ Fᴀᴠᴏᴜʀɪᴛᴇ Fᴏᴏᴅ ?",        opts:["A > PIZZA 🍕","B > ALOO KA PARATHA 🥔","C > ICE CREAM 🍨","D > SANA 🥞"], ans:3},
+  {q:"Mᴇʀᴀ Fᴀᴠᴏᴜʀɪᴛᴇ Cʜɪᴢ ?",        opts:["A > SANA 🤤","B > BMW 🚗","C > FREE FIRE 🔥","D > NINJA HATHODI 🥷"], ans:0},
+  {q:"Dᴜɴɪʏᴀ Kɪ Sᴀʙsᴇ Sᴜɴᴅᴇʀ Cʜɪᴢ ?",opts:["A > ROSE 🌹","B > SANA 💝","C > DIAMOND 💎","D > PADHAI 📚"], ans:1},
+  {q:"Sᴀɴᴀ Mᴇʀɪ Kʏᴀ Lᴀɢᴛɪ Hᴀɪ ?",    opts:["A > WIFE 👰","B > BILLI 🐱","C > DARLING 💝","D > ALL"], ans:3}
+];
+
+function loadQuestion() {
+  const q = quizData[currentQue];
+  document.body.style.background = "#fff0f5";
+  document.getElementById("quiz-status").innerText = "";
+  document.getElementById("queNum").innerText = "QUE " + (currentQue + 1);
+  document.getElementById("queText").innerText = q.q;
+  const container = document.getElementById("optionsContainer");
+  container.innerHTML = "";
+  q.opts.forEach((opt, index) => {
+    const b = document.createElement("button");
+    b.className = "quiz-option";
+    b.innerText = opt;
+    b.onclick = () => checkAnswer(index, b);
+    container.appendChild(b);
+  });
+}
+
+function checkAnswer(idx, btn) {
+  const q = quizData[currentQue];
+  const allBtns = document.querySelectorAll('.quiz-option');
+
+  if (idx === q.ans) {
+    btn.classList.add('correct-opt');
+    allBtns.forEach(b => b.onclick = null);
+    document.getElementById("quiz-status").innerHTML = "<span style='color:#28a745;'>SAHI HAI! 😍🎉</span>";
+    document.body.style.background = "#b7f0c8";
+    safePlay(correctSnd);
+    colorBoom();
+    setTimeout(() => {
+      currentQue++;
+      if (currentQue < quizData.length) loadQuestion();
+      else {
+        document.getElementById("quizPage").classList.add("hidden");
+        document.getElementById("winnerPage").classList.remove("hidden");
+        document.body.style.background = "#fff0f5";
+        safePlay(victorySnd);
+      }
+    }, 1800);
+
+  } else {
+    btn.classList.add('wrong-opt');
+    safePlay(wrongSnd);
+    document.body.style.background = "#ffd6d6";
+    document.getElementById("quiz-status").innerHTML =
+      `<span style='color:#dc3545;'>${getWrongMsg()}</span>`;
+    document.body.classList.remove('screen-shake');
+    void document.body.offsetWidth;
+    document.body.classList.add('screen-shake');
+    setTimeout(() => {
+      btn.classList.remove('wrong-opt');
+      document.body.classList.remove('screen-shake');
+      document.body.style.background = "#fff0f5";
+      document.getElementById("quiz-status").innerText = "";
+    }, 1200);
+  }
+}
+
+function colorBoom() {
+  const emojis = ["❤️","🧡","💛","💚","💙","💜","🩷","✨","🎊","🎉","⭐","🌟","💥","🎈"];
+  for (let i = 0; i < 35; i++) {
+    const p = document.createElement("div");
+    p.className = "firework";
+    p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    p.style.left = Math.random() * 100 + "%";
+    p.style.top  = Math.random() * 100 + "%";
+    p.style.setProperty('--ex', (Math.random() - 0.5) * 500 + "px");
+    p.style.setProperty('--ey', (Math.random() - 0.5) * 500 + "px");
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1100);
+  }
+}
+
+let isLiked = false, isSaved = false, isMuted = false;
+
+function playEdit(v) {
+  try { bg.volume = 0; } catch(e) {}
+  const player = document.getElementById("videoPlayerPage");
+  player.style.display = "flex";
+  const fv = document.getElementById("fullVideo");
+  fv.src = v;
+  fv.muted = false;
+  isMuted = false;
+  document.getElementById("muteIcon").textContent = "🔊";
+  fv.play().catch(()=>{});
+
+  fv.ontimeupdate = function() {
+    if (!fv.duration) return;
+    const pct = (fv.currentTime / fv.duration) * 100;
+    document.getElementById("reel-progress-fill").style.width = pct + "%";
+    document.getElementById("reel-seek").max = fv.duration;
+    document.getElementById("reel-seek").value = fv.currentTime;
+    document.getElementById("reel-current").textContent = formatTime(fv.currentTime);
+  };
+  fv.onloadedmetadata = function() {
+    document.getElementById("reel-duration").textContent = formatTime(fv.duration);
+  };
+  fv.onended = function() { fv.currentTime = 0; fv.play(); };
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m + ":" + (sec < 10 ? "0" : "") + sec;
+}
+
+let lastTap = 0;
+function handleTapPlay(e) {
+  const now = Date.now();
+  if (now - lastTap < 300) {
+    // Double tap = like with heart burst
+    if (!isLiked) toggleLike(document.querySelector('.reel-action-item'));
+    const h = document.createElement('div');
+    h.className = 'heart-burst';
+    h.textContent = '❤️';
+    h.style.left = (e.clientX - 30) + 'px';
+    h.style.top  = (e.clientY - 30) + 'px';
+    document.getElementById("videoPlayerPage").appendChild(h);
+    setTimeout(() => h.remove(), 800);
+  } else {
+    togglePlayPause();
+  }
+  lastTap = now;
+}
+
+function togglePlayPause() {
+  const fv = document.getElementById("fullVideo");
+  const icon = document.getElementById("reel-play-icon");
+  if (fv.paused) {
+    fv.play();
+    icon.textContent = "▶";
+  } else {
+    fv.pause();
+    icon.textContent = "⏸";
+  }
+  icon.classList.remove("hidden");
+  clearTimeout(icon._t);
+  icon._t = setTimeout(() => icon.classList.add("hidden"), 700);
+}
+
+function toggleLike(el) {
+  isLiked = !isLiked;
+  const icon = document.getElementById("like-icon");
+  icon.classList.toggle("liked", isLiked);
+  document.getElementById("like-count").textContent = isLiked ? "4.2M ❤️" : "4.2M";
+}
+
+function toggleSave(el) {
+  isSaved = !isSaved;
+  const icon = document.getElementById("save-icon");
+  icon.style.fill = isSaved ? "#fff" : "none";
+}
+
+function toggleMute() {
+  const fv = document.getElementById("fullVideo");
+  isMuted = !isMuted;
+  fv.muted = isMuted;
+  document.getElementById("muteIcon").textContent = isMuted ? "🔇" : "🔊";
+}
+
+function seekVideo(val) {
+  document.getElementById("fullVideo").currentTime = val;
+}
+
+function closeVideo() {
+  document.getElementById("videoPlayerPage").style.display = "none";
+  const fv = document.getElementById("fullVideo");
+  try { fv.pause(); fv.src = ""; } catch(e) {}
+  try { bg.volume = 0.15; } catch(e) {}
+}
+function showLetterIntro() { document.getElementById("winnerPage").classList.add("hidden"); document.getElementById("letterIntro").classList.remove("hidden"); }
+function openLetter() { safePlay(letterSnd); document.getElementById("letterIntro").classList.add("hidden"); document.getElementById("page13").classList.remove("hidden"); }
+function showFinal() { document.getElementById("page13").classList.add("hidden"); document.getElementById("finalPage").classList.remove("hidden"); }
+</script>
+</body>
+</html>
